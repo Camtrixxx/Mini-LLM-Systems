@@ -109,6 +109,24 @@ class SwiGLU(nn.Module):
         return self.w2(silu(self.w1(x)) * self.w3(x))
 
 
+class SiLUFFN(nn.Module):
+    """Ungated FFN baseline for the SwiGLU ablation: w2(SiLU(w1 x))."""
+
+    def __init__(
+        self,
+        d_model: int,
+        d_ff: int,
+        device: torch.device | None = None,
+        dtype: torch.dtype | None = None,
+    ):
+        super().__init__()
+        self.w1 = Linear(d_model, d_ff, device=device, dtype=dtype)
+        self.w2 = Linear(d_ff, d_model, device=device, dtype=dtype)
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.w2(silu(self.w1(x)))
+
+
 # --------------------------------------------------------------------------- #
 # Positional embeddings and attention
 # --------------------------------------------------------------------------- #
@@ -160,9 +178,12 @@ def scaled_dot_product_attention(
     """
     d_k = Q.shape[-1]
     scores = einsum(Q, K, "... q d_k, ... k d_k -> ... q k") / math.sqrt(d_k)
+    # Mask + softmax in float32: under autocast(bf16) + torch.compile, the
+    # fused backward of a bf16 softmax with -inf entries produces NaNs.
+    scores = scores.to(torch.float32)
     if mask is not None:
         scores = scores.masked_fill(~mask, float("-inf"))
-    weights = softmax(scores, dim=-1)
+    weights = softmax(scores, dim=-1).to(V.dtype)
     return einsum(weights, V, "... q k, ... k d_v -> ... q d_v")
 
 
@@ -224,20 +245,33 @@ class TransformerBlock(nn.Module):
         num_heads: int,
         d_ff: int,
         rope: RotaryPositionalEmbedding | None = None,
+        norm_position: str = "pre",  # "pre" | "post" | "none" (ablations)
+        ffn_type: str = "swiglu",  # "swiglu" | "silu" (ablations)
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
     ):
         super().__init__()
-        self.ln1 = RMSNorm(d_model, device=device, dtype=dtype)
+        assert norm_position in ("pre", "post", "none")
+        self.norm_position = norm_position
+        if norm_position != "none":
+            self.ln1 = RMSNorm(d_model, device=device, dtype=dtype)
+            self.ln2 = RMSNorm(d_model, device=device, dtype=dtype)
         self.attn = MultiHeadSelfAttention(
             d_model, num_heads, rope=rope, device=device, dtype=dtype
         )
-        self.ln2 = RMSNorm(d_model, device=device, dtype=dtype)
-        self.ffn = SwiGLU(d_model, d_ff, device=device, dtype=dtype)
+        ffn_cls = SwiGLU if ffn_type == "swiglu" else SiLUFFN
+        self.ffn = ffn_cls(d_model, d_ff, device=device, dtype=dtype)
 
     def forward(self, x: Tensor, token_positions: Tensor | None = None) -> Tensor:
-        x = x + self.attn(self.ln1(x), token_positions=token_positions)
-        x = x + self.ffn(self.ln2(x))
+        if self.norm_position == "pre":
+            x = x + self.attn(self.ln1(x), token_positions=token_positions)
+            x = x + self.ffn(self.ln2(x))
+        elif self.norm_position == "post":
+            x = self.ln1(x + self.attn(x, token_positions=token_positions))
+            x = self.ln2(x + self.ffn(x))
+        else:  # no layer norm
+            x = x + self.attn(x, token_positions=token_positions)
+            x = x + self.ffn(x)
         return x
 
 
@@ -253,20 +287,36 @@ class TransformerLM(nn.Module):
         num_heads: int,
         d_ff: int,
         rope_theta: float,
+        norm_position: str = "pre",
+        ffn_type: str = "swiglu",
+        use_rope: bool = True,
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
     ):
         super().__init__()
         self.context_length = context_length
         self.token_embeddings = Embedding(vocab_size, d_model, device=device, dtype=dtype)
-        rope = RotaryPositionalEmbedding(
-            theta=rope_theta,
-            d_k=d_model // num_heads,
-            max_seq_len=context_length,
-            device=device,
+        rope = (
+            RotaryPositionalEmbedding(
+                theta=rope_theta,
+                d_k=d_model // num_heads,
+                max_seq_len=context_length,
+                device=device,
+            )
+            if use_rope
+            else None  # NoPE ablation: no positional information at all
         )
         self.layers = nn.ModuleList(
-            TransformerBlock(d_model, num_heads, d_ff, rope=rope, device=device, dtype=dtype)
+            TransformerBlock(
+                d_model,
+                num_heads,
+                d_ff,
+                rope=rope,
+                norm_position=norm_position,
+                ffn_type=ffn_type,
+                device=device,
+                dtype=dtype,
+            )
             for _ in range(num_layers)
         )
         self.ln_final = RMSNorm(d_model, device=device, dtype=dtype)

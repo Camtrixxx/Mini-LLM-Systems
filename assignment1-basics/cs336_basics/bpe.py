@@ -126,7 +126,15 @@ def train_bpe(
     """
     # --- 1. Pre-tokenize the corpus into word frequencies -------------------
     word_counts = _pretokenize_file(input_path, special_tokens, num_processes)
+    return train_bpe_from_counts(word_counts, vocab_size, special_tokens)
 
+
+def train_bpe_from_counts(
+    word_counts: Counter[bytes],
+    vocab_size: int,
+    special_tokens: list[str],
+) -> tuple[dict[int, bytes], list[tuple[bytes, bytes]]]:
+    """Run the BPE merge loop on precomputed pre-token frequencies."""
     # Each unique word is a list of symbols (bytes); merges rewrite these lists.
     words: list[list[bytes]] = []
     freqs: list[int] = []

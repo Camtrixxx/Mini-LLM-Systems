@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from collections.abc import Iterable, Iterator
 
 import regex as re
@@ -63,17 +62,10 @@ class Tokenizer:
         merges_filepath: str,
         special_tokens: list[str] | None = None,
     ) -> Tokenizer:
-        """Load a tokenizer from serialized vocab (JSON) and merges (text) files."""
-        with open(vocab_filepath) as f:
-            raw_vocab = json.load(f)
-        vocab = {int(i): token.encode("utf-8") for token, i in raw_vocab.items()}
-        merges = []
-        with open(merges_filepath) as f:
-            for line in f:
-                line = line.rstrip("\n")
-                if line and len(line.split(" ")) == 2:
-                    a, b = line.split(" ")
-                    merges.append((a.encode("utf-8"), b.encode("utf-8")))
+        """Load a tokenizer from GPT-2 style vocab (JSON) and merges (text) files."""
+        from cs336_basics.tokenizer_io import load_vocab_merges
+
+        vocab, merges = load_vocab_merges(vocab_filepath, merges_filepath)
         return cls(vocab, merges, special_tokens)
 
     def encode(self, text: str) -> list[int]:
