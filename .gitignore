@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.venv/
+.ruff_cache/
+
+# 训练数据（体积大，按 README 用 wget 自行下载）
+assignment1-basics/data/
+assignment4-data/local_data/
+
+# 训练产物
+wandb/
+checkpoints/
+*.ckpt
+# 忽略模型权重，但保留课程自带的测试 fixtures
+*.pt
+*.bin
+!*/tests/fixtures/**
+
+# 编辑器/系统
+.DS_Store
+.idea/
+.vscode/
+.claude/
