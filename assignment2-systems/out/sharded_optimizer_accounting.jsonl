@@ -1,0 +1,2 @@
+{"sharded": false, "size": "xl", "mem_after_init_gb": 12.82, "mem_before_step_gb": 65.46, "mem_after_step_gb": 65.46, "iter_ms": 2905.6}
+{"sharded": true, "size": "xl", "mem_after_init_gb": 12.82, "mem_before_step_gb": 52.96, "mem_after_step_gb": 52.96, "iter_ms": 2853.5}
