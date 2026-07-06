@@ -35,18 +35,20 @@ include = ["cs336_alignment*"]
 
 [tool.uv]
 package = true
+# 只在本机(linux x86_64)解析,避免为 darwin/arm64 解析 gpu extra 的 vllm(无 arm64 wheel)。
 environments = [
-    "sys_platform == 'darwin' and platform_machine == 'arm64'",
     "sys_platform == 'linux' and platform_machine == 'x86_64'",
 ]
 
 [tool.uv.sources]
+# 本机驱动 CUDA 12.8:base 安装(核心单元测试,不含 vllm/flash-attn 的 gpu extra)
+# 把 torch 钉到 cu128,而非默认 PyPI 的 cu13 wheel(同 A1/A2)。
 torch = [
-    { index = "pytorch-cu129", extra = "gpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cu128", marker = "sys_platform == 'linux'" },
 ]
 [[tool.uv.index]]
-name = "pytorch-cu129"
-url = "https://download.pytorch.org/whl/cu129"
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [tool.pytest.ini_options]
