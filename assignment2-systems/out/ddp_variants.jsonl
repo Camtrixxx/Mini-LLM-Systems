@@ -1,0 +1,2 @@
+{"ddp": "naive", "size": "xl", "world_size": 2, "batch_per_rank": 4, "iter_ms": 2985.4, "comm_ms": 129.65, "comm_pct": 4.3}
+{"ddp": "overlap", "size": "xl", "world_size": 2, "batch_per_rank": 4, "iter_ms": 2911.55, "comm_ms": 18.13, "comm_pct": 0.6}

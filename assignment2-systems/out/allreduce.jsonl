@@ -1,0 +1,12 @@
+{"world_size": 2, "size_mb": 1, "ms": 0.0503}
+{"world_size": 2, "size_mb": 10, "ms": 0.1227}
+{"world_size": 2, "size_mb": 100, "ms": 0.8515}
+{"world_size": 2, "size_mb": 1000, "ms": 7.5109}
+{"world_size": 4, "size_mb": 1, "ms": 0.0658}
+{"world_size": 4, "size_mb": 10, "ms": 0.1762}
+{"world_size": 4, "size_mb": 100, "ms": 1.1671}
+{"world_size": 4, "size_mb": 1000, "ms": 10.3339}
+{"world_size": 6, "size_mb": 1, "ms": 0.0469}
+{"world_size": 6, "size_mb": 10, "ms": 0.1889}
+{"world_size": 6, "size_mb": 100, "ms": 1.3009}
+{"world_size": 6, "size_mb": 1000, "ms": 11.7564}
