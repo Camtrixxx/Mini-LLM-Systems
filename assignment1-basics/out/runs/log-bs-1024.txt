@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/data/heyuhang/Mini-LLM-Systems/assignment1-basics/scripts/train.py", line 194, in <module>
+    main()
+  File "/data/heyuhang/Mini-LLM-Systems/assignment1-basics/scripts/train.py", line 152, in main
+    loss.backward()
+  File "/opt/miniconda3/envs/hyh-cs336/lib/python3.12/site-packages/torch/_tensor.py", line 631, in backward
+    torch.autograd.backward(
+  File "/opt/miniconda3/envs/hyh-cs336/lib/python3.12/site-packages/torch/autograd/__init__.py", line 381, in backward
+    _engine_run_backward(
+  File "/opt/miniconda3/envs/hyh-cs336/lib/python3.12/site-packages/torch/autograd/graph.py", line 869, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.77 GiB. GPU 0 has a total capacity of 79.25 GiB of which 8.79 GiB is free. Including non-PyTorch memory, this process has 70.45 GiB memory in use. Of the allocated memory 60.10 GiB is allocated by PyTorch, and 9.84 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+ERROR conda.cli.main_run:execute(148): `conda run python scripts/train.py --run-name ts-bs-1024 --train-data out/data/tinystories_train.npy --val-data out/data/tinystories_valid.npy --compile --lr 1.4e-2 --batch-size 1024` failed. (See above for error)
+[ts-bs-1024] 22.7M params, device=cuda:0

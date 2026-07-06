@@ -53,6 +53,7 @@ def main() -> None:
         norm_position=config.get("norm_position", "pre"),
         ffn_type=config.get("ffn_type", "swiglu"),
         use_rope=not config.get("no_rope", False),
+        tie_embeddings=config.get("tie_embeddings", False),
         device=args.device,
     )
     checkpoint = torch.load(run_dir / "checkpoint.pt", map_location=args.device)

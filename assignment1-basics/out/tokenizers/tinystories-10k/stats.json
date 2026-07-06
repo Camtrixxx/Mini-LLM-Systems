@@ -1,0 +1,26 @@
+{
+  "input": "data/TinyStoriesV2-GPT4-train.txt",
+  "vocab_size": 10000,
+  "special_tokens": [
+    "<|endoftext|>"
+  ],
+  "pretokenize_seconds": 14.0,
+  "merge_seconds": 42.2,
+  "total_seconds": 56.2,
+  "peak_rss_gb": 0.27,
+  "unique_pretokens": 59933,
+  "longest_token_bytes": 15,
+  "longest_token": " accomplishment",
+  "top_longest_tokens": [
+    " accomplishment",
+    " disappointment",
+    " responsibility",
+    " uncomfortable",
+    " compassionate",
+    " understanding",
+    " neighbourhood",
+    " Unfortunately",
+    " determination",
+    " encouragement"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "ts_tok_on_ts": 4.011,
+  "owt_tok_on_owt": 4.505,
+  "ts_tok_on_owt": 3.405,
+  "owt_tok_on_ts": 3.867,
+  "throughput_mb_per_s_single_proc": 2.14,
+  "pile_825gb_hours_single_proc": 107.2,
+  "pile_825gb_hours_96_proc": 1.12
+}

@@ -1,0 +1,18 @@
+{"type": "train", "step": 20, "wall": 15.4, "loss": 8.7671, "lr": 0.0002}
+{"type": "train", "step": 40, "wall": 16.6, "loss": 6.8104, "lr": 0.0004}
+{"type": "train", "step": 60, "wall": 17.8, "loss": 6.2161, "lr": 0.0006}
+{"type": "train", "step": 80, "wall": 19.0, "loss": 6.1909, "lr": 0.0008}
+{"type": "train", "step": 100, "wall": 20.3, "loss": 6.58, "lr": 0.001}
+{"type": "train", "step": 120, "wall": 21.5, "loss": 7.1763, "lr": 0.0012}
+{"type": "train", "step": 140, "wall": 22.7, "loss": 7.3526, "lr": 0.0014000000000000002}
+{"type": "train", "step": 160, "wall": 24.2, "loss": 7.2283, "lr": 0.0016}
+{"type": "train", "step": 180, "wall": 25.7, "loss": 7.0003, "lr": 0.0018}
+{"type": "train", "step": 200, "wall": 27.1, "loss": 6.8117, "lr": 0.002}
+{"type": "train", "step": 220, "wall": 28.5, "loss": 6.5841, "lr": 0.0022}
+{"type": "train", "step": 240, "wall": 29.9, "loss": 6.4936, "lr": 0.0024}
+{"type": "eval", "step": 250, "wall": 37.0, "val_loss": 6.4202}
+{"type": "train", "step": 260, "wall": 37.6, "loss": 6.4264, "lr": 0.0026}
+{"type": "train", "step": 280, "wall": 38.8, "loss": 8.0085, "lr": 0.0028000000000000004}
+{"type": "train", "step": 300, "wall": 40.1, "loss": NaN, "lr": 0.003}
+{"type": "diverged", "step": 300, "loss": NaN}
+{"type": "final", "step": 300, "best_val": 6.420151174068451}

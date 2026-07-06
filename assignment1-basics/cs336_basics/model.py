@@ -290,6 +290,7 @@ class TransformerLM(nn.Module):
         norm_position: str = "pre",
         ffn_type: str = "swiglu",
         use_rope: bool = True,
+        tie_embeddings: bool = False,
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
     ):
@@ -321,6 +322,13 @@ class TransformerLM(nn.Module):
         )
         self.ln_final = RMSNorm(d_model, device=device, dtype=dtype)
         self.lm_head = Linear(d_model, vocab_size, device=device, dtype=dtype)
+        if tie_embeddings:
+            # Weight tying (Vaswani et al., 2017 §3.4): share input/output
+            # embeddings; re-init with a smaller std suited to both roles.
+            nn.init.trunc_normal_(
+                self.token_embeddings.weight, mean=0.0, std=0.02, a=-0.06, b=0.06
+            )
+            self.lm_head.weight = self.token_embeddings.weight
 
     def forward(self, token_ids: Tensor) -> Tensor:
         """token_ids: (batch, seq_len) -> logits: (batch, seq_len, vocab_size)."""

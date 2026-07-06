@@ -161,3 +161,9 @@ cython_debug/
 
 .ruff_cache/
 *.zip
+
+# Training artifacts: keep small, referenced outputs (plots, logs, config,
+# generation samples, tokenizers) but exclude large regenerable binaries.
+out/data/
+*.npy
+*.pt

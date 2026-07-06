@@ -12,15 +12,41 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import time
 from pathlib import Path
 
 import numpy as np
 import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 from cs336_basics.model import TransformerLM
 from cs336_basics.nn_utils import cross_entropy, get_batch, gradient_clipping, save_checkpoint
 from cs336_basics.optimizer import AdamW, get_lr_cosine_schedule
+
+
+def ddp_setup() -> tuple[int, int, int, bool]:
+    """Init process group if launched under torchrun (WORLD_SIZE>1).
+
+    Returns (rank, local_rank, world_size, is_ddp). Single-GPU runs (no
+    torchrun) return (0, 0, 1, False) and behave exactly as before.
+    """
+    world_size = int(os.environ.get("WORLD_SIZE", "1"))
+    if world_size == 1:
+        return 0, 0, 1, False
+    rank = int(os.environ["RANK"])
+    local_rank = int(os.environ["LOCAL_RANK"])
+    dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
+    torch.cuda.set_device(local_rank)
+    return rank, local_rank, world_size, True
+
+
+def unwrap(model: torch.nn.Module) -> torch.nn.Module:
+    """Strip torch.compile (_orig_mod) and DDP (module) wrappers for checkpointing."""
+    model = getattr(model, "_orig_mod", model)  # torch.compile
+    model = getattr(model, "module", model)  # DDP
+    return model
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,6 +67,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--norm-position", choices=["pre", "post", "none"], default="pre")
     p.add_argument("--ffn-type", choices=["swiglu", "silu"], default="swiglu")
     p.add_argument("--no-rope", action="store_true")
+    p.add_argument("--tie-embeddings", action="store_true")
     # Optimization
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--max-iters", type=int, default=10000)
@@ -89,19 +116,31 @@ def main() -> None:
     min_lr = args.min_lr if args.min_lr is not None else args.lr / 10
     cosine_iters = args.cosine_iters if args.cosine_iters is not None else args.max_iters
 
+    rank, local_rank, world_size, is_ddp = ddp_setup()
+    is_main = rank == 0
+    if is_ddp:
+        device = f"cuda:{local_rank}"
+
     run_dir = Path(args.out_dir) / args.run_name
-    run_dir.mkdir(parents=True, exist_ok=True)
-    with open(run_dir / "config.json", "w") as f:
-        json.dump(vars(args), f, indent=2)
-    log_file = open(run_dir / "log.jsonl", "a")
+    if is_main:
+        run_dir.mkdir(parents=True, exist_ok=True)
+        with open(run_dir / "config.json", "w") as f:
+            json.dump({**vars(args), "world_size": world_size}, f, indent=2)
+        log_file = open(run_dir / "log.jsonl", "a")
+    else:
+        log_file = None
 
     def log(record: dict) -> None:
-        log_file.write(json.dumps(record) + "\n")
-        log_file.flush()
+        if log_file is not None:
+            log_file.write(json.dumps(record) + "\n")
+            log_file.flush()
 
-    torch.manual_seed(args.seed)
-    np.random.seed(args.seed)
-    device = args.device
+    # Distinct seed per rank so each GPU samples different training batches
+    # (get_batch draws random offsets from the global torch RNG).
+    torch.manual_seed(args.seed + rank)
+    np.random.seed(args.seed + rank)
+    if not is_ddp:
+        device = args.device
     if "cuda" in device:
         torch.set_float32_matmul_precision("high")  # allow TF32
 
@@ -119,10 +158,16 @@ def main() -> None:
         norm_position=args.norm_position,
         ffn_type=args.ffn_type,
         use_rope=not args.no_rope,
+        tie_embeddings=args.tie_embeddings,
         device=device,
     )
     n_params = sum(p.numel() for p in model.parameters())
-    print(f"[{args.run_name}] {n_params / 1e6:.1f}M params, device={device}")
+    if is_main:
+        eff_batch = args.batch_size * world_size
+        print(f"[{args.run_name}] {n_params / 1e6:.1f}M params, device={device}, "
+              f"world_size={world_size}, effective_batch={eff_batch}")
+    if is_ddp:
+        model = DDP(model, device_ids=[local_rank])
     if args.compile:
         model = torch.compile(model)
 
@@ -161,33 +206,51 @@ def main() -> None:
             train_loss = running_loss / running_count
             running_loss, running_count = 0.0, 0
             log({"type": "train", "step": it, "wall": round(wall, 1), "loss": round(train_loss, 4), "lr": lr})
-            if not math.isfinite(train_loss) or train_loss > 20:
-                print(f"[{args.run_name}] DIVERGED at step {it} (loss={train_loss:.2f})")
-                log({"type": "diverged", "step": it, "loss": train_loss})
+            # Both stop conditions are decided here on a lockstep boundary so all
+            # ranks break together — a rank that exits early would leave the rest
+            # hanging at the next gradient all-reduce.
+            bad = not math.isfinite(train_loss) or train_loss > 20
+            out_of_time = bool(args.max_runtime_minutes) and wall > args.max_runtime_minutes * 60
+            if is_ddp:
+                flags = torch.tensor([1.0 if bad else 0.0, 1.0 if out_of_time else 0.0], device=device)
+                dist.all_reduce(flags, op=dist.ReduceOp.MAX)
+                bad, out_of_time = flags[0].item() > 0, flags[1].item() > 0
+            if bad:
+                if is_main:
+                    print(f"[{args.run_name}] DIVERGED at step {it} (loss={train_loss:.2f})")
+                    log({"type": "diverged", "step": it, "loss": train_loss})
                 diverged = True
+                break
+            if out_of_time:
+                if is_main:
+                    print(f"[{args.run_name}] hit max runtime at step {it}")
                 break
 
         if it % args.eval_interval == 0 or it == args.max_iters:
+            # All ranks run eval in lockstep (model.eval()/train() and any DDP
+            # buffer sync must stay symmetric); only rank 0 records the result.
             val_loss = evaluate(model, val_data, args, device)
-            wall = time.perf_counter() - t_start
-            best_val = min(best_val, val_loss)
-            print(f"[{args.run_name}] step {it}/{args.max_iters} wall {wall:.0f}s val_loss {val_loss:.4f}")
-            log({"type": "eval", "step": it, "wall": round(wall, 1), "val_loss": round(val_loss, 4)})
+            if is_main:
+                wall = time.perf_counter() - t_start
+                best_val = min(best_val, val_loss)
+                print(f"[{args.run_name}] step {it}/{args.max_iters} wall {wall:.0f}s val_loss {val_loss:.4f}")
+                log({"type": "eval", "step": it, "wall": round(wall, 1), "val_loss": round(val_loss, 4)})
 
         if it % args.checkpoint_interval == 0 or it == args.max_iters:
-            raw = getattr(model, "_orig_mod", model)  # unwrap torch.compile
-            save_checkpoint(raw, optimizer, it, run_dir / "checkpoint.pt")
+            if is_main:
+                save_checkpoint(unwrap(model), optimizer, it, run_dir / "checkpoint.pt")
+            if is_ddp:
+                dist.barrier()  # others wait while rank 0 writes the checkpoint
 
-        if args.max_runtime_minutes and (time.perf_counter() - t_start) > args.max_runtime_minutes * 60:
-            print(f"[{args.run_name}] hit max runtime at step {it}")
-            break
-
-    if not diverged:
-        raw = getattr(model, "_orig_mod", model)
-        save_checkpoint(raw, optimizer, it, run_dir / "checkpoint.pt")
-    log({"type": "final", "step": it, "best_val": best_val if best_val < float("inf") else None})
-    print(f"[{args.run_name}] done, best val_loss {best_val:.4f}")
-    log_file.close()
+    if is_main:
+        if not diverged:
+            save_checkpoint(unwrap(model), optimizer, it, run_dir / "checkpoint.pt")
+        log({"type": "final", "step": it, "best_val": best_val if best_val < float("inf") else None})
+        print(f"[{args.run_name}] done, best val_loss {best_val:.4f}")
+        if log_file is not None:
+            log_file.close()
+    if is_ddp:
+        dist.destroy_process_group()
 
 
 if __name__ == "__main__":

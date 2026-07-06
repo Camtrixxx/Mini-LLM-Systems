@@ -1,0 +1,10 @@
+--- sample 0 (162 tokens) ---
+Once upon a time, there was a little boy named Tim. Tim loved to play outside. One day, he found a small rock. He was very happy. He thought, "I will bury this rock in my yard."
+Tim put the rock in a hole and covered it with dirt. He wanted to see if it would fit in his yard. The next day, he went to the yard to dig up the rock. He put it in the hole and waited.
+The next day, Tim went to dig up the rock. But it was not a rock! It was a big, round, and shiny rock. Tim was surprised. He took the rock out and showed it to his friends. They all laughed and said it was a fake rock. They played with the rock and had lots of fun.
+
+--- sample 1 (159 tokens) ---
+Once upon a time, there was a big, happy dog named Spot. Spot loved to play outside. One day, he saw a pretty gem on the ground. He wanted to pick it up and show his friend, Kitty.
+Spot tried to pick up the gem, but it was too big for him. He asked his friend, Kitty, to help him. Kitty tried to pick up the gem with her mouth, but it was too big for her too. They both felt sad.
+Just then, a little bird came and saw Spot and Kitty trying to pick up the gem. The bird flew down and gave them the gem. Spot and Kitty were so happy! They thanked the bird and played together all day. The gem was their new friend, and they all had a lot of fun.
+

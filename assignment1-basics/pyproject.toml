@@ -8,6 +8,7 @@ dependencies = [
     "einops>=0.8",      # tensor operations
     "einx>=0.4",        # more general tensor operations
     "jaxtyping>=0.3",   # type hints for pytorch/jax/numpy
+    "matplotlib>=3.9",  # loss curve plots
     "numpy>=2.4",
     "psutil>=7",
     "pytest>=9.0",
@@ -32,6 +33,16 @@ module-root = ""
 [tool.uv]
 package = true
 python-preference = "managed"
+
+# 本机驱动为 CUDA 12.8,PyPI 默认的 torch 2.11 wheel 捆绑 CUDA 13 运行时无法使用,
+# 必须从 pytorch 官方 cu128 index 安装(参见实验报告/学习指南的硬件说明)。
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
 
 [tool.pytest.ini_options]
 log_cli = true
