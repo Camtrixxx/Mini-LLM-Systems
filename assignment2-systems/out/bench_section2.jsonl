@@ -1,0 +1,30 @@
+{"size": "small", "mode": "forward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.043850636668503286, "std_s": 0.0002223356704962867, "peak_mem_gb": 3.8232908248901367}
+{"size": "small", "mode": "forward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.022294414415955543, "std_s": 0.00038402288728731673, "peak_mem_gb": 2.9703474044799805}
+{"size": "small", "mode": "forward_backward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.1340360451489687, "std_s": 6.894497627973267e-05, "peak_mem_gb": 4.547567367553711}
+{"size": "small", "mode": "forward_backward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.06730510918423534, "std_s": 0.0014037303627039705, "peak_mem_gb": 3.7365026473999023}
+{"size": "small", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.14671386564150452, "std_s": 0.0002860742342448517, "peak_mem_gb": 5.036316871643066}
+{"size": "small", "mode": "full", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.0916604065336287, "std_s": 0.000489142987084343, "peak_mem_gb": 4.209016799926758}
+{"size": "medium", "mode": "forward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.13215567311272025, "std_s": 0.0001362640929945779, "peak_mem_gb": 10.326152801513672}
+{"size": "medium", "mode": "forward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.04515487225726247, "std_s": 0.0016625628519074099, "peak_mem_gb": 8.156108856201172}
+{"size": "medium", "mode": "forward_backward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.4044408773072064, "std_s": 9.131964210606271e-05, "peak_mem_gb": 12.141197204589844}
+{"size": "medium", "mode": "forward_backward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.12963102506473662, "std_s": 0.0005860008069864682, "peak_mem_gb": 10.002396583557129}
+{"size": "medium", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.4411570736207068, "std_s": 0.0002512490781457681, "peak_mem_gb": 13.72317123413086}
+{"size": "medium", "mode": "full", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.17895325925201178, "std_s": 0.009903297876749935, "peak_mem_gb": 11.58128833770752}
+{"size": "large", "mode": "forward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.2748912638984621, "std_s": 0.00010752961866805947, "peak_mem_gb": 20.02818775177002}
+{"size": "large", "mode": "forward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.07435123547911644, "std_s": 0.0006971116903365252, "peak_mem_gb": 16.336270332336426}
+{"size": "large", "mode": "forward_backward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.8654953168705106, "std_s": 0.007398128268254135, "peak_mem_gb": 23.87638282775879}
+{"size": "large", "mode": "forward_backward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.22822732841596008, "std_s": 0.0010798235679241497, "peak_mem_gb": 20.294184684753418}
+{"size": "large", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.9482480676844716, "std_s": 0.00016408788871296334, "peak_mem_gb": 27.487723350524902}
+{"size": "large", "mode": "full", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.3313128790818155, "std_s": 0.034289909876187685, "peak_mem_gb": 23.97428321838379}
+{"size": "xl", "mode": "forward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.8365841865539551, "std_s": 0.001280829180365943, "peak_mem_gb": 39.741777420043945}
+{"size": "xl", "mode": "forward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.14452834129333497, "std_s": 0.00019432415804180559, "peak_mem_gb": 36.82449531555176}
+{"size": "xl", "mode": "forward_backward", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 2.591640629153699, "std_s": 0.0479656712149095, "peak_mem_gb": 52.670658111572266}
+{"size": "xl", "mode": "forward_backward", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.4671475414186716, "std_s": 0.00018338006764610394, "peak_mem_gb": 49.77290058135986}
+{"size": "xl", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 2.8536231234669684, "std_s": 0.006906108835502821, "peak_mem_gb": 65.53870677947998}
+{"size": "xl", "mode": "full", "dtype": "bf16", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.751914287917316, "std_s": 0.00032012802521677006, "peak_mem_gb": 62.671854972839355}
+{"size":"10B","mode":"forward","dtype":"fp32","oom":true}
+{"size":"10B","mode":"forward","dtype":"bf16","oom":true}
+{"size":"10B","mode":"forward_backward","dtype":"fp32","oom":true}
+{"size":"10B","mode":"forward_backward","dtype":"bf16","oom":true}
+{"size":"10B","mode":"full","dtype":"fp32","oom":true}
+{"size":"10B","mode":"full","dtype":"bf16","oom":true}

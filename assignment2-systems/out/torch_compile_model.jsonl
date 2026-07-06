@@ -1,0 +1,5 @@
+{"size": "small", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.14535004701465368, "std_s": 0.00010127690352007096, "peak_mem_gb": 5.040955543518066}
+{"size": "small", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.12287832610309124, "std_s": 6.678087019775505e-05, "peak_mem_gb": 4.316361427307129}
+{"size": "medium", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.4410285704769194, "std_s": 0.0006139694887030942, "peak_mem_gb": 13.72317123413086}
+{"size": "medium", "mode": "full", "dtype": "fp32", "context_length": 512, "batch_size": 4, "steps": 10, "warmup": 5, "mean_s": 0.3839349947869778, "std_s": 7.123429289861864e-05, "peak_mem_gb": 11.83462142944336}
+TC_DONE

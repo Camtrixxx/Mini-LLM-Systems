@@ -1,0 +1,8 @@
+{"group_size": null, "n_layers": 32, "oom": true}
+{"group_size": 1, "n_layers": 32, "peak_mem_gb": 63.29}
+{"group_size": 2, "n_layers": 32, "peak_mem_gb": 69.26}
+{"group_size": 4, "n_layers": 32, "oom": true}
+{"group_size": 6, "n_layers": 32, "oom": true}
+{"group_size": 8, "n_layers": 32, "oom": true}
+{"group_size": 16, "n_layers": 32, "oom": true}
+{"group_size": 32, "n_layers": 32, "oom": true}
