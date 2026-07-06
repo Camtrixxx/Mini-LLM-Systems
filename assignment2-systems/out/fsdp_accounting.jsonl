@@ -1,0 +1,2 @@
+{"mode": "ddp", "size": "xl", "mem_after_init_gb": 12.82, "peak_gb": 65.46}
+{"mode": "fsdp", "size": "xl", "mem_after_init_gb": 12.82, "peak_gb": 65.56}
