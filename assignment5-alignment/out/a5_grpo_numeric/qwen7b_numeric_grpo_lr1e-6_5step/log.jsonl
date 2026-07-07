@@ -1,0 +1,5 @@
+{"step": 1, "wall": 13.61, "loss": -0.002375359181314707, "accuracy": 0.875, "format_accuracy": 1.0, "mean_reward": 0.875, "std_reward": 0.3535533845424652, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.2421875}
+{"step": 2, "wall": 26.41, "loss": -0.005118973553180695, "accuracy": 0.625, "format_accuracy": 1.0, "mean_reward": 0.625, "std_reward": 0.5175491571426392, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.345703125}
+{"step": 3, "wall": 39.11, "loss": 0.0008906051516532898, "accuracy": 0.875, "format_accuracy": 1.0, "mean_reward": 0.875, "std_reward": 0.3535533845424652, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.328125}
+{"step": 4, "wall": 51.47, "loss": -0.032876066863536835, "accuracy": 0.625, "format_accuracy": 1.0, "mean_reward": 0.625, "std_reward": 0.5175491571426392, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.57421875}
+{"step": 5, "wall": 64.15, "loss": 0.0, "accuracy": 0.5, "format_accuracy": 1.0, "mean_reward": 0.5, "std_reward": 0.5345224738121033, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.0, "eval_accuracy": 0.375, "eval_format_accuracy": 1.0, "eval_mean_reward": 0.375}

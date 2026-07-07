@@ -1,0 +1,16 @@
+{
+  "accuracy": 0.4765625,
+  "format_accuracy": 1.0,
+  "mean_reward": 0.4765625,
+  "model": "models/Qwen2.5-Math-7B-Instruct",
+  "prompt": "question_only",
+  "reward_mode": "numeric",
+  "backend": "vllm",
+  "split": "test",
+  "num_examples": 128,
+  "num_completions": 128,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_new_tokens": 256,
+  "n": 1
+}

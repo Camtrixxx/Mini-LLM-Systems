@@ -1,0 +1,16 @@
+{
+  "accuracy": 0.1875,
+  "format_accuracy": 1.0,
+  "mean_reward": 0.1875,
+  "model": "models/OLMo-2-0425-1B",
+  "prompt": "r1_zero",
+  "reward_mode": "numeric",
+  "backend": "transformers",
+  "split": "test",
+  "num_examples": 128,
+  "num_completions": 128,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_new_tokens": 128,
+  "n": 1
+}

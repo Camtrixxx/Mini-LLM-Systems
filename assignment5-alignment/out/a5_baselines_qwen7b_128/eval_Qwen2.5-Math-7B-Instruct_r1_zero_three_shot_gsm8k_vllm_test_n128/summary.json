@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.0,
+  "format_accuracy": 0.0,
+  "mean_reward": 0.0,
+  "model": "models/Qwen2.5-Math-7B-Instruct",
+  "prompt": "r1_zero_three_shot_gsm8k",
+  "backend": "vllm",
+  "split": "test",
+  "num_examples": 128,
+  "num_completions": 128,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_new_tokens": 256,
+  "n": 1
+}

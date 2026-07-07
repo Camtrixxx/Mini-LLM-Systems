@@ -1,0 +1,2 @@
+{"step": 1, "wall": 13.49, "loss": 7.450580596923828e-09, "accuracy": 0.875, "format_accuracy": 1.0, "mean_reward": 0.875, "std_reward": 0.3535533845424652, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.2421875}
+{"step": 2, "wall": 26.26, "loss": 7.450580596923828e-09, "accuracy": 0.625, "format_accuracy": 1.0, "mean_reward": 0.625, "std_reward": 0.5175491571426392, "max_reward": 1.0, "min_reward": 0.0, "grad_norm": 0.345703125}

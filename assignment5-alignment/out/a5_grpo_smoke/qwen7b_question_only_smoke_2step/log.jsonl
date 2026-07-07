@@ -1,0 +1,2 @@
+{"step": 1, "wall": 4.22, "loss": 0.0, "accuracy": 0.0, "format_accuracy": 0.0, "mean_reward": 0.0, "std_reward": 0.0, "max_reward": 0.0, "min_reward": 0.0, "grad_norm": 0.0, "eval_accuracy": 0.0, "eval_format_accuracy": 0.0, "eval_mean_reward": 0.0}
+{"step": 2, "wall": 30.41, "loss": 0.0, "accuracy": 0.0, "format_accuracy": 0.0, "mean_reward": 0.0, "std_reward": 0.0, "max_reward": 0.0, "min_reward": 0.0, "grad_norm": 0.0, "eval_accuracy": 0.0, "eval_format_accuracy": 0.0, "eval_mean_reward": 0.0}

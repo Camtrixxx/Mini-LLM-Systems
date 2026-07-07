@@ -1,0 +1,16 @@
+{
+  "accuracy": 0.5420773313115997,
+  "format_accuracy": 1.0,
+  "mean_reward": 0.5420773313115997,
+  "model": "models/Qwen2.5-Math-7B-Instruct",
+  "prompt": "r1_zero_three_shot_gsm8k",
+  "reward_mode": "numeric",
+  "backend": "vllm",
+  "split": "test",
+  "num_examples": 1319,
+  "num_completions": 1319,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_new_tokens": 256,
+  "n": 1
+}
