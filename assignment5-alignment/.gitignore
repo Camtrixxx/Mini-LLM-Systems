@@ -1,5 +1,10 @@
 *.bin
 models/
+# Keep small experiment results (config.json / log.jsonl / summary.json);
+# exclude bulky per-sample dumps and driver logs.
+out/**/samples.jsonl
+out/*.log
+out/**/logs/
 
 nav
 tags

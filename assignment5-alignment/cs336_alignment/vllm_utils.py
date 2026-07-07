@@ -30,7 +30,8 @@ class VLLMServer:
     model_id: str
     host: str = "127.0.0.1"
     port: int = 8000
-    gpu: int = 1
+    gpu: int | str = 1
+    tensor_parallel_size: int = 1
     seed: int = 0
     load_format: str = "auto"
     logging_level: str = "ERROR"
@@ -52,6 +53,7 @@ class VLLMServer:
                 host=self.host,
                 port=self.port,
                 gpu=self.gpu,
+                tensor_parallel_size=self.tensor_parallel_size,
                 seed=self.seed,
                 load_format=self.load_format,
                 logging_level=self.logging_level,
@@ -95,7 +97,8 @@ def _http_json(method: str, url: str, payload: dict | None = None, timeout: int 
         method=method,
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    with opener.open(request, timeout=timeout) as response:
         body = response.read()
     if not body:
         return {}
@@ -117,7 +120,8 @@ def start_server(
     model_id: str,
     host: str,
     port: int,
-    gpu: int,
+    gpu: int | str,
+    tensor_parallel_size: int,
     seed: int,
     load_format: str,
     logging_level: str,
@@ -143,7 +147,7 @@ def start_server(
         "--seed",
         str(seed),
         "--tensor-parallel-size",
-        "1",
+        str(tensor_parallel_size),
         "--weight-transfer-config",
         json.dumps({"backend": "nccl"}),
         "--load-format",
@@ -155,11 +159,12 @@ def start_server(
 
 def wait_for_server(base_url: str, process: subprocess.Popen | None, timeout: int) -> None:
     deadline = time.monotonic() + timeout
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     while time.monotonic() < deadline:
         if process is not None and process.poll() is not None:
             raise RuntimeError(f"vLLM server exited early with code {process.returncode}.")
         try:
-            with urllib.request.urlopen(f"{base_url}/health", timeout=5):
+            with opener.open(f"{base_url}/health", timeout=5):
                 return
         except OSError:
             time.sleep(2)
@@ -202,6 +207,8 @@ def generate_completions(
             "seed": sampling_params["seed"],
             "return_token_ids": True,
         }
+        if sampling_params.get("top_p") is not None:
+            payload["top_p"] = sampling_params["top_p"]
         if sampling_params.get("stop") is not None:
             payload["stop"] = sampling_params["stop"]
             payload["include_stop_str_in_output"] = sampling_params.get("include_stop_str_in_output", False)
